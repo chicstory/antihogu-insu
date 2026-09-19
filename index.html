@@ -9,6 +9,16 @@
   <!-- Pretendard 폰트 -->
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <link rel="stylesheet" href="css/style.css">
+
+  <!-- Zero-Privacy 로컬 파서 CDN (pdf.js & tesseract.js) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script>
+    // pdf.js worker 설정
+    if (window.pdfjsLib) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body>
 
@@ -46,7 +56,7 @@
       <div class="hero-banner">
         <span class="hero-tag">🔒 Zero-Privacy 로컬 분석</span>
         <h2 class="hero-title">내 보험, 호구 잡히고 있을까?</h2>
-        <p class="hero-desc">로그인 0초, 개인정보 0개! 사진이나 텍스트를 올리면 브라우저에서 10초 만에 도장을 쾅 찍어드립니다.</p>
+        <p class="hero-desc">로그인 0초, 개인정보 0개! 사진이나 PDF를 올리면 브라우저에서 직접 개인정보를 가리고 10초 만에 판독합니다.</p>
       </div>
 
       <!-- 입력 카드 -->
@@ -66,12 +76,55 @@
           </div>
         </div>
 
-        <!-- 텍스트 직접 붙여넣기 -->
-        <div class="raw-input-area">
-          <label for="rawTextInput" class="sample-title">📋 또는 증권 텍스트/알림톡 복사해서 붙여넣기</label>
-          <textarea id="rawTextInput" class="raw-textarea" placeholder="보험 증권에 적힌 특약과 금액을 그대로 복사해서 붙여넣으세요.&#10;예시:&#10;암진단비 10,000,000원&#10;뇌혈관질환진단비 20,000,000원&#10;질병사망(갱신형) 60,000,000원"></textarea>
-          <button id="btnAnalyzeText" class="btn-primary">10초 만에 호구 등급 판독하기 🔨</button>
+        <!-- 사진 및 PDF 파일 업로드 드롭존 -->
+        <div class="file-upload-area">
+          <div class="sample-title">📸 증권 사진(JPG/PNG) 또는 PDF 올리기</div>
+          <div id="dropZone" class="drop-zone">
+            <div class="drop-icon">📄</div>
+            <p class="drop-text"><strong>증권 사진이나 PDF 파일을 여기로 끌어다 놓으세요</strong></p>
+            <p class="drop-sub">또는 파일 선택 / 스마트폰 카메라로 촬영</p>
+            <input type="file" id="fileInput" accept="image/*,application/pdf" style="display: none;">
+            <button type="button" id="btnSelectFile" class="btn-select-file">파일 선택 / 사진 촬영</button>
+          </div>
         </div>
+
+        <!-- 캔버스 개인정보 마스킹 작업대 (파일 로드 시 노출) -->
+        <div id="maskingStudio" class="masking-studio" style="display: none;">
+          <div class="masking-header">
+            <div>
+              <h4 class="masking-title">🔒 개인정보 마스킹 작업대</h4>
+              <p class="masking-desc">마우스나 손가락으로 드래그하여 이름, 주민번호, 증권번호 등을 검은색으로 가려주세요!</p>
+            </div>
+            <div class="masking-actions">
+              <button type="button" id="btnClearMasks" class="btn-secondary">🔄 마스킹 초기화</button>
+              <button type="button" id="btnRunOCR" class="btn-primary-small">🔒 마스킹 완료 & 10초 분석 시작 🔨</button>
+            </div>
+          </div>
+          
+          <div class="canvas-wrapper">
+            <canvas id="privacyCanvas"></canvas>
+          </div>
+        </div>
+
+        <!-- 진행 상태 프로그레스 바 -->
+        <div id="ocrProgressBox" class="ocr-progress-box" style="display: none;">
+          <div class="ocr-progress-header">
+            <span id="ocrStatusText">텍스트 판독 중...</span>
+            <span id="ocrPercentText">0%</span>
+          </div>
+          <div class="ocr-progress-bar">
+            <div id="ocrProgressBarFill" class="ocr-progress-bar-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <!-- 텍스트 직접 붙여넣기 (아코디언 형태) -->
+        <details class="raw-input-details">
+          <summary class="raw-details-summary">📋 또는 증권 텍스트 직접 붙여넣기</summary>
+          <div class="raw-input-area" style="margin-top: 14px;">
+            <textarea id="rawTextInput" class="raw-textarea" placeholder="보험 증권에 적힌 특약과 금액을 그대로 복사해서 붙여넣으세요.&#10;예시:&#10;암진단비 10,000,000원&#10;뇌혈관질환진단비 20,000,000원&#10;질병사망(갱신형) 60,000,000원"></textarea>
+            <button id="btnAnalyzeText" class="btn-primary">텍스트로 호구 등급 판독하기 🔨</button>
+          </div>
+        </details>
 
         <div class="privacy-pledge">
           <span>🔒</span>
@@ -209,6 +262,7 @@
   <!-- Scripts -->
   <script src="js/rules.js"></script>
   <script src="js/analyzer.js"></script>
+  <script src="js/ocr.js"></script>
   <script src="js/wiki.js"></script>
   <script src="js/app.js"></script>
 </body>

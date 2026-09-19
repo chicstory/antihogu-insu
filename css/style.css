@@ -257,6 +257,193 @@ body {
   font-weight: 600;
 }
 
+/* 파일 업로드 드롭존 */
+.file-upload-area {
+  margin-bottom: 24px;
+}
+
+.drop-zone {
+  border: 2px dashed var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 32px 20px;
+  text-align: center;
+  background-color: var(--bg-sub);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.drop-zone.dragover {
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+.drop-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+.drop-text {
+  font-size: 15px;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.drop-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.btn-select-file {
+  background-color: var(--primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 20px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-select-file:hover {
+  background-color: var(--primary-hover);
+}
+
+/* 캔버스 개인정보 마스킹 작업대 */
+.masking-studio {
+  background-color: #0F172A; /* 마스킹 집중도를 위해 캔버스 주변은 다크 백드롭 */
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 24px;
+  color: #FFFFFF;
+}
+
+.masking-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.masking-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #FFFFFF;
+}
+
+.masking-desc {
+  font-size: 13px;
+  color: #94A3B8;
+  margin-top: 2px;
+}
+
+.masking-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-secondary {
+  background-color: #334155;
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background-color: #475569;
+}
+
+.btn-primary-small {
+  background-color: var(--primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 18px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary-small:hover {
+  background-color: var(--primary-hover);
+}
+
+.canvas-wrapper {
+  background-color: #1E293B;
+  border-radius: var(--radius-sm);
+  overflow: auto;
+  max-height: 500px;
+  display: flex;
+  justify-content: center;
+  padding: 12px;
+}
+
+#privacyCanvas {
+  max-width: 100%;
+  cursor: crosshair;
+  background-color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+/* 진행 상태 프로그레스 바 */
+.ocr-progress-box {
+  background-color: var(--bg-sub);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.ocr-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.ocr-progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--border-light);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.ocr-progress-bar-fill {
+  height: 100%;
+  background-color: var(--primary);
+  transition: width 0.3s ease;
+}
+
+/* 아코디언 텍스트 입력 */
+.raw-input-details {
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  background-color: var(--bg-card);
+}
+
+.raw-details-summary {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-sub);
+  cursor: pointer;
+}
+
 .raw-input-area {
   margin-top: 20px;
 }

@@ -39,7 +39,99 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 3. 1초 원클릭 샘플 테스트 버튼 제어
+  // 3. 파일 업로드 및 Zero-Privacy 마스킹 OCR 연동
+  const privacyCanvas = document.getElementById("privacyCanvas");
+  const maskingStudio = document.getElementById("maskingStudio");
+  const ocrProgressBox = document.getElementById("ocrProgressBox");
+  const ocrStatusText = document.getElementById("ocrStatusText");
+  const ocrPercentText = document.getElementById("ocrPercentText");
+  const ocrProgressBarFill = document.getElementById("ocrProgressBarFill");
+
+  const dropZone = document.getElementById("dropZone");
+  const fileInput = document.getElementById("fileInput");
+  const btnSelectFile = document.getElementById("btnSelectFile");
+  const btnClearMasks = document.getElementById("btnClearMasks");
+  const btnRunOCR = document.getElementById("btnRunOCR");
+
+  const ocr = new HoguOCR({
+    canvas: privacyCanvas,
+    onProgress: (p) => {
+      if (ocrProgressBox) ocrProgressBox.style.display = "block";
+      if (ocrStatusText) ocrStatusText.textContent = p.status;
+      const pct = Math.floor(p.progress * 100);
+      if (ocrPercentText) ocrPercentText.textContent = `${pct}%`;
+      if (ocrProgressBarFill) ocrProgressBarFill.style.width = `${pct}%`;
+    },
+    onCompleted: (extractedText) => {
+      if (ocrProgressBox) ocrProgressBox.style.display = "none";
+      if (maskingStudio) maskingStudio.style.display = "none";
+      
+      // 추출된 텍스트로 파싱 및 분석 실행
+      const parsedPolicy = analyzer.parseRawText(extractedText);
+      runAnalysis(parsedPolicy);
+    },
+    onError: (errMsg) => {
+      if (ocrProgressBox) ocrProgressBox.style.display = "none";
+      alert(errMsg);
+    }
+  });
+
+  // 파일 선택 버튼
+  if (btnSelectFile && fileInput) {
+    btnSelectFile.addEventListener("click", () => fileInput.click());
+  }
+
+  // 드롭존 클릭
+  if (dropZone && fileInput) {
+    dropZone.addEventListener("click", (e) => {
+      if (e.target !== btnSelectFile) fileInput.click();
+    });
+
+    // 드래그 앤 드롭 이벤트
+    dropZone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropZone.classList.add("dragover");
+    });
+    dropZone.addEventListener("dragleave", () => {
+      dropZone.classList.remove("dragover");
+    });
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("dragover");
+      if (e.dataTransfer.files.length > 0) {
+        handleIncomingFile(e.dataTransfer.files[0]);
+      }
+    });
+  }
+
+  // 파일 인풋 변경
+  if (fileInput) {
+    fileInput.addEventListener("change", (e) => {
+      if (e.target.files.length > 0) {
+        handleIncomingFile(e.target.files[0]);
+      }
+    });
+  }
+
+  async function handleIncomingFile(file) {
+    if (maskingStudio) maskingStudio.style.display = "block";
+    maskingStudio.scrollIntoView({ behavior: "smooth" });
+    await ocr.loadFile(file);
+  }
+
+  // 마스킹 초기화
+  if (btnClearMasks) {
+    btnClearMasks.addEventListener("click", () => ocr.clearMasks());
+  }
+
+  // 마스킹 완료 & OCR 판독 실행
+  if (btnRunOCR) {
+    btnRunOCR.addEventListener("click", async () => {
+      await ocr.runOCR();
+    });
+  }
+
+  // 4. 1초 원클릭 샘플 테스트 버튼 제어
   const btnSampleUser = document.getElementById("btnSampleUser");
   const btnSampleMother = document.getElementById("btnSampleMother");
 
@@ -55,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 4. 직접 텍스트 붙여넣기 분석
+  // 5. 직접 텍스트 붙여넣기 분석
   const btnAnalyzeText = document.getElementById("btnAnalyzeText");
   const rawTextInput = document.getElementById("rawTextInput");
 
@@ -71,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 5. 분석 실행 및 결과 화면 렌더링
+  // 6. 분석 실행 및 결과 화면 렌더링
   function runAnalysis(policy) {
     const result = analyzer.analyzePolicy(policy);
     renderResult(result, policy);
