@@ -35,8 +35,29 @@ class HoguPdfEngine {
       for (let i = 1; i <= pdf.numPages; i++) {
         const page = await pdf.getPage(i);
         const textContent = await page.getTextContent();
-        const pageText = textContent.items.map(item => item.str).join(" ");
-        fullText += pageText + "\n";
+        
+        // Y좌표 기반 행(Row) 줄바꿈 복원 로직
+        let lastY = null;
+        let pageLines = [];
+        let currentLine = "";
+
+        for (const item of textContent.items) {
+          if (!item.str) continue;
+          // transform[5]는 해당 텍스트의 Y 좌표
+          const currentY = item.transform ? item.transform[5] : null;
+          
+          if (lastY !== null && currentY !== null && Math.abs(currentY - lastY) > 5) {
+            if (currentLine.trim()) pageLines.push(currentLine.trim());
+            currentLine = "";
+          }
+          currentLine += item.str + " ";
+          lastY = currentY;
+        }
+        if (currentLine.trim()) pageLines.push(currentLine.trim());
+
+        const pageText = pageLines.join("\n");
+        fullText += `\n--- [Page ${i}] ---\n` + pageText + "\n";
+
         this.onProgress({
           status: `텍스트 추출 중... (${i}/${pdf.numPages} 페이지)`,
           progress: 0.3 + (i / pdf.numPages) * 0.5

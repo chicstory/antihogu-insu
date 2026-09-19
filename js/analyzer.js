@@ -230,7 +230,7 @@ class HoguAnalyzer {
       "표적항암약물허가치료비", "양성뇌종양진단비"
     ];
 
-    lines.forEach(line => {
+    lines.forEach((line, idx) => {
       const trimmed = line.trim();
       if (!trimmed) return;
       const cleanNoSpace = trimmed.replace(/\s+/g, "");
@@ -250,20 +250,22 @@ class HoguAnalyzer {
 
       // 2) 담보 매칭 (알려진 키워드가 줄 안에 있는지 검사)
       for (const kw of KNOWN_KEYWORDS) {
-        // 공백 오타 허용 매칭 (예: "암 진 단 비" ➔ "암진단비")
         if (cleanNoSpace.includes(kw)) {
-          // 금액 패턴 찾기 (숫자 + 콤마 + 단위)
-          const matches = trimmed.match(/(\d[\d,.]*\s*(?:억|천만|천|만)?\s*원?)/g);
+          // 해당 줄 + 다음 2줄까지 합쳐서 검색 (행 분리/줄바꿈 표 구조 완벽 대응!)
+          let searchContext = trimmed;
+          if (lines[idx + 1]) searchContext += " " + lines[idx + 1].trim();
+          if (lines[idx + 2]) searchContext += " " + lines[idx + 2].trim();
+
+          const matches = searchContext.match(/(\d[\d,.]*\s*(?:억|천만|천|만)?\s*원?)/g);
           if (matches) {
-            // 유효한 금액(1만 원 이상) 추출
             for (const m of matches) {
               const parsedAmt = parseAmount(m);
-              if (parsedAmt >= 10000) {
-                const isRenewal = cleanNoSpace.includes("갱신") || cleanNoSpace.includes("전기납");
-                const is100Age = cleanNoSpace.includes("100세");
+              // 1만 원 이상 ~ 5억 이하의 유효 가입금액
+              if (parsedAmt >= 10000 && parsedAmt <= 500000000) {
+                const isRenewal = searchContext.includes("갱신") || searchContext.includes("전기납");
+                const is100Age = searchContext.includes("100세");
 
-                // 중복 방지 (이미 들어간 담보인지 확인)
-                const exists = items.some(it => it.name === kw && it.amount === parsedAmt);
+                const exists = items.some(it => it.name === kw);
                 if (!exists) {
                   items.push({
                     name: kw,
@@ -277,7 +279,7 @@ class HoguAnalyzer {
               }
             }
           }
-          break; // 한 줄에서 하나의 담보 매칭 성공 시 다음 줄로
+          break;
         }
       }
 
@@ -299,6 +301,36 @@ class HoguAnalyzer {
         }
       }
     });
+
+    // 4) [궁극의 폴백] 만약 담보가 0개 잡혔다면? ➔ 전체 텍스트 전역 스캐너 가동!
+    if (items.length === 0) {
+      console.log("🔍 [스마트 스캐너] 행 매칭 0개 감지 ➔ 전역 거리 기반 스캐너 가동!");
+      const fullDoc = rawText.replace(/\s+/g, " ");
+
+      KNOWN_KEYWORDS.forEach(kw => {
+        const kwIdx = fullDoc.indexOf(kw);
+        if (kwIdx !== -1) {
+          // 키워드 뒤 80글자 범위에서 가장 먼저 등장하는 금액 탐색
+          const snippet = fullDoc.substring(kwIdx, kwIdx + 80);
+          const amtMatches = snippet.match(/(\d[\d,.]*\s*(?:억|천만|천|만)?\s*원?)/g);
+          if (amtMatches) {
+            for (const m of amtMatches) {
+              const parsedAmt = parseAmount(m);
+              if (parsedAmt >= 10000 && parsedAmt <= 500000000) {
+                items.push({
+                  name: kw,
+                  amount: parsedAmt,
+                  term: snippet.includes("100세") ? "100세" : "80세",
+                  pay: snippet.includes("갱신") ? "전기납" : "20년납",
+                  isRenewal: snippet.includes("갱신")
+                });
+                break;
+              }
+            }
+          }
+        }
+      });
+    }
 
     return {
       title: "📋 판독 완료된 보험 증권",
