@@ -169,52 +169,139 @@ class HoguAnalyzer {
     };
   }
 
-  // 2. 텍스트 파서 (직접 복사해온 텍스트 파싱)
+  // 2. 텍스트 파서 (OCR 텍스트 및 다양한 형식 지원 초강력 스마트 파서)
   parseRawText(rawText) {
+    if (!rawText || !rawText.trim()) {
+      return {
+        title: "📋 빈 증권",
+        age: 40,
+        gender: "M",
+        monthlyPremium: 0,
+        renewalPremium: 0,
+        items: []
+      };
+    }
+
     const lines = rawText.split("\n");
     const items = [];
     let monthlyPremium = 0;
     let renewalPremium = 0;
 
+    // 한국어 금액 환산 헬퍼 (예: "5,000만", "1억", "10,000,000", "5000만원" 등)
+    const parseAmount = (str) => {
+      if (!str) return 0;
+      const clean = str.replace(/[, \s]/g, "");
+
+      // "1억" 단위
+      if (clean.includes("억")) {
+        const parts = clean.split("억");
+        const eok = parseFloat(parts[0]) || 1;
+        const rest = parts[1] ? parseAmount(parts[1]) : 0;
+        return (eok * 100000000) + rest;
+      }
+      // "천만" 또는 "만" 단위
+      if (clean.includes("천만")) {
+        const val = parseFloat(clean.replace("천만", "").replace("원", "")) || 1;
+        return val * 10000000;
+      }
+      if (clean.includes("만")) {
+        const val = parseFloat(clean.replace("만", "").replace("원", "")) || 1;
+        return val * 10000;
+      }
+      // "천원" 단위 (예: 10,000천원 = 1천만 원)
+      if (clean.includes("천원")) {
+        const val = parseFloat(clean.replace("천원", "")) || 1;
+        return val * 1000;
+      }
+      // 순수 숫자 (예: 10000000)
+      const numOnly = parseInt(clean.replace(/[^0-9]/g, ""), 10);
+      return isNaN(numOnly) ? 0 : numOnly;
+    };
+
+    // 주요 담보 키워드 사전
+    const KNOWN_KEYWORDS = [
+      "일반암진단비", "암진단비", "유사암진단비", "고액치료비암", "고액암",
+      "뇌혈관질환진단비", "뇌혈관질환", "뇌혈관", "뇌졸중진단비", "뇌졸중", "뇌출혈진단비", "뇌출혈",
+      "허혈성심장질환진단비", "허혈성심장", "허혈성", "급성심근경색증진단비", "급성심근경색",
+      "질병입원의료비", "상해입원의료비", "질병통원의료비", "상해통원의료비", "상해의료실비",
+      "질병사망", "일반상해사망", "상해사망", "상해후유장해", "질병후유장해",
+      "골절진단비", "화상진단비", "깁스치료비", "피부질환수술비", "인공관절수술비",
+      "질병수술비", "16대질병수술비", "상해수술비", "암수술비", "암직접치료입원비",
+      "표적항암약물허가치료비", "양성뇌종양진단비"
+    ];
+
     lines.forEach(line => {
       const trimmed = line.trim();
       if (!trimmed) return;
+      const cleanNoSpace = trimmed.replace(/\s+/g, "");
 
-      // 보험료 감지
-      if (trimmed.includes("보험료") && trimmed.includes("원")) {
-        const numMatch = trimmed.match(/(\d[\d,]*)\s*원/);
-        if (numMatch) {
-          const val = parseInt(numMatch[1].replace(/,/g, ""), 10);
-          if (trimmed.includes("갱신") && !trimmed.includes("보장보험료")) {
+      // 1) 보험료 감지
+      if (cleanNoSpace.includes("보험료")) {
+        const amtCandidate = trimmed.match(/(\d[\d,]*\s*(?:만|천|억)?\s*원?)/);
+        if (amtCandidate) {
+          const val = parseAmount(amtCandidate[0]);
+          if (cleanNoSpace.includes("갱신") && !cleanNoSpace.includes("보장보험료")) {
             renewalPremium = val;
-          } else if (!monthlyPremium && val > 10000) {
+          } else if (!monthlyPremium && val >= 10000 && val <= 1000000) {
             monthlyPremium = val;
           }
         }
       }
 
-      // 담보 라인 파싱 (금액이 포함된 라인)
-      const amtMatch = trimmed.match(/(\d[\d,]*)\s*원/);
-      if (amtMatch) {
-        const amount = parseInt(amtMatch[1].replace(/,/g, ""), 10);
-        // 담보명 추출 (금액 앞부분)
-        const namePart = trimmed.split(/(\d[\d,]*)\s*원/)[0].trim();
-        const isRenewal = trimmed.includes("갱신") || trimmed.includes("전기납");
+      // 2) 담보 매칭 (알려진 키워드가 줄 안에 있는지 검사)
+      for (const kw of KNOWN_KEYWORDS) {
+        // 공백 오타 허용 매칭 (예: "암 진 단 비" ➔ "암진단비")
+        if (cleanNoSpace.includes(kw)) {
+          // 금액 패턴 찾기 (숫자 + 콤마 + 단위)
+          const matches = trimmed.match(/(\d[\d,.]*\s*(?:억|천만|천|만)?\s*원?)/g);
+          if (matches) {
+            // 유효한 금액(1만 원 이상) 추출
+            for (const m of matches) {
+              const parsedAmt = parseAmount(m);
+              if (parsedAmt >= 10000) {
+                const isRenewal = cleanNoSpace.includes("갱신") || cleanNoSpace.includes("전기납");
+                const is100Age = cleanNoSpace.includes("100세");
 
-        if (namePart && amount >= 10000) {
-          items.push({
-            name: namePart,
-            amount: amount,
-            term: trimmed.includes("100세") ? "100세" : "80세",
-            pay: trimmed.includes("전기납") ? "전기납" : "20년납",
-            isRenewal: isRenewal
-          });
+                // 중복 방지 (이미 들어간 담보인지 확인)
+                const exists = items.some(it => it.name === kw && it.amount === parsedAmt);
+                if (!exists) {
+                  items.push({
+                    name: kw,
+                    amount: parsedAmt,
+                    term: is100Age ? "100세" : "80세",
+                    pay: isRenewal ? "전기납" : "20년납",
+                    isRenewal: isRenewal
+                  });
+                }
+                break;
+              }
+            }
+          }
+          break; // 한 줄에서 하나의 담보 매칭 성공 시 다음 줄로
+        }
+      }
+
+      // 3) 일반 패턴 매칭 (특약명 + 금액 형식)
+      if (!items.some(it => trimmed.includes(it.name))) {
+        const generalMatch = trimmed.match(/^([가-힣A-Za-z0-9\(\)\s]{2,20})\s+([0-9,]+(?:\s*원|\s*만원|\s*천원|\s*억)?)/);
+        if (generalMatch) {
+          const nameCandidate = generalMatch[1].trim();
+          const amtCandidate = parseAmount(generalMatch[2]);
+          if (amtCandidate >= 10000 && !nameCandidate.includes("합계") && !nameCandidate.includes("보험료")) {
+            items.push({
+              name: nameCandidate,
+              amount: amtCandidate,
+              term: "80세",
+              pay: "20년납",
+              isRenewal: trimmed.includes("갱신") || trimmed.includes("전기납")
+            });
+          }
         }
       }
     });
 
     return {
-      title: "📋 직접 입력한 보험 증권",
+      title: "📋 판독 완료된 보험 증권",
       age: 40,
       gender: "M",
       monthlyPremium: monthlyPremium || 60000,

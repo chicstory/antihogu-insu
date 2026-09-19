@@ -66,9 +66,21 @@ document.addEventListener("DOMContentLoaded", () => {
       if (ocrProgressBox) ocrProgressBox.style.display = "none";
       if (maskingStudio) maskingStudio.style.display = "none";
       
+      console.log("✅ [OCR 완료 텍스트]", extractedText);
+      
+      // 추출된 텍스트를 텍스트 입력창에 자동으로 채우고 아코디언 열기!
+      const rawTextInput = document.getElementById("rawTextInput");
+      const detailsEl = document.querySelector(".raw-input-details");
+      if (rawTextInput) rawTextInput.value = extractedText;
+      if (detailsEl) detailsEl.open = true;
+
       // 추출된 텍스트로 파싱 및 분석 실행
       const parsedPolicy = analyzer.parseRawText(extractedText);
-      runAnalysis(parsedPolicy);
+      if (parsedPolicy.items.length === 0) {
+        alert("⚠️ 텍스트는 판독되었으나 특약/금액을 자동으로 분리하지 못했습니다.\n아래 텍스트 입력창에 추출된 내용을 확인하시고 [텍스트로 호구 등급 판독하기]를 눌러보세요!");
+      } else {
+        runAnalysis(parsedPolicy);
+      }
     },
     onError: (errMsg) => {
       if (ocrProgressBox) ocrProgressBox.style.display = "none";

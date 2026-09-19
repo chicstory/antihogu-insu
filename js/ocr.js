@@ -233,36 +233,58 @@ class HoguOCR {
     return filtered;
   }
 
-  // 5. 마스킹된 캔버스 이미지로 Tesseract OCR 구동
+  // 5. 마스킹된 캔버스 이미지로 Tesseract OCR 구동 (원샷 견고 API)
   async runOCR() {
-    if (!this.canvas) return;
+    if (!this.canvas) {
+      this.onError("캔버스가 준비되지 않았습니다.");
+      return;
+    }
 
     try {
-      this.onProgress({ status: "브라우저 로컬 OCR 엔진 가동 중...", progress: 0.1 });
+      console.log("🚀 [HoguOCR] OCR 시작...");
+      this.onProgress({ status: "브라우저 로컬 OCR 엔진 준비 중...", progress: 0.1 });
 
-      // Tesseract Worker 초기화
-      if (!this.worker) {
-        this.worker = await Tesseract.createWorker("kor+eng", 1, {
+      if (typeof Tesseract === "undefined") {
+        throw new Error("Tesseract.js 라이브러리가 로드되지 않았습니다. 인터넷 연결을 확인해 주세요.");
+      }
+
+      // Tesseract 원샷 실행 (브라우저 메모리 관리 최적화)
+      const result = await Tesseract.recognize(
+        this.canvas,
+        "kor+eng",
+        {
           logger: (m) => {
+            console.log("🔍 [OCR Log]", m);
             if (m.status === "recognizing text") {
+              const p = m.progress || 0;
               this.onProgress({
-                status: `텍스트 판독 중... (${Math.floor(m.progress * 100)}%)`,
-                progress: 0.1 + (m.progress * 0.8)
+                status: `텍스트 판독 중... (${Math.floor(p * 100)}%)`,
+                progress: 0.1 + (p * 0.8)
+              });
+            } else if (m.status === "loading tesseract core" || m.status === "loading language traineddata") {
+              this.onProgress({
+                status: "로컬 언어팩 로드 중...",
+                progress: 0.2
               });
             }
           }
-        });
+        }
+      );
+
+      const rawExtracted = result.data.text;
+      console.log("📝 [OCR 원본 텍스트]", rawExtracted);
+
+      if (!rawExtracted || !rawExtracted.trim()) {
+        this.onError("사진에서 글자를 감지하지 못했습니다. 더 선명하고 밝은 증권 사진으로 다시 시도해 주세요.");
+        return;
       }
 
-      // 마스킹이 적용된 캔버스를 그대로 OCR에 주입! (마스킹된 개인정보는 인식 불가 = 100% 안전)
-      const { data: { text } } = await this.worker.recognize(this.canvas);
-      
       this.onProgress({ status: "판독 완료! 담보 및 금액 분석 중...", progress: 1.0 });
-      const safeText = this.filterSensitiveText(text);
+      const safeText = this.filterSensitiveText(rawExtracted);
       this.onCompleted(safeText);
     } catch (err) {
-      console.error(err);
-      this.onError("OCR 판독 중 오류가 발생했습니다. 선명한 사진으로 다시 시도해 주세요.");
+      console.error("❌ [OCR Error]", err);
+      this.onError(`OCR 판독 중 오류가 발생했습니다: ${err.message || err}\n(참고: 크롬 브라우저에서 인터넷 연결을 확인해 주세요)`);
     }
   }
 }
