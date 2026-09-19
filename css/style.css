@@ -1368,3 +1368,231 @@ body {
   color: var(--text-muted);
 }
 
+/* ==========================================================================
+   🚨 보험 119: 필수 메인 계약 & 주계약 함정 스타일
+   ========================================================================== */
+
+.section-block {
+  margin-bottom: 32px;
+}
+
+.section-header {
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  letter-spacing: -0.4px;
+}
+
+.section-title.text-danger {
+  color: #E11D48;
+}
+
+.section-sub {
+  font-size: 14px;
+  color: var(--text-sub);
+  line-height: 1.5;
+}
+
+.essential-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 768px) {
+  .essential-grid, .trap-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.essential-card {
+  background-color: var(--bg-card);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.essential-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border-color: rgba(49, 130, 246, 0.4);
+}
+
+.essential-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.essential-card-header .badge {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.badge-danger {
+  background-color: #FFE4E6;
+  color: #E11D48;
+  border: 1px solid #FDA4AF;
+}
+
+.badge-warning {
+  background-color: #FEF3C7;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+}
+
+.essential-who {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-sub);
+  background-color: var(--bg-sub);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.essential-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--text-main);
+  line-height: 1.35;
+  margin: 0;
+}
+
+.disaster-box {
+  background-color: #FFF1F2;
+  border-left: 3.5px solid #E11D48;
+  padding: 10px 14px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.disaster-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: #BE123C;
+  margin-bottom: 4px;
+}
+
+.disaster-text {
+  font-size: 13.5px;
+  color: #881337;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.core-setting-box {
+  background-color: #F0FDF4;
+  border-left: 3.5px solid #16A34A;
+  padding: 10px 14px;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.setting-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: #15803D;
+  margin-bottom: 4px;
+}
+
+.setting-text {
+  font-size: 13.5px;
+  color: #14532D;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.essential-footer {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-light);
+}
+
+.cost-tag {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.eli10-sub {
+  font-size: 12.5px;
+  color: #92400E;
+  background-color: #FEF3C7;
+  padding: 8px 10px;
+  border-radius: 6px;
+  line-height: 1.45;
+}
+
+/* ❌ 주계약 함정 카드 */
+.trap-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 20px;
+}
+
+.trap-card {
+  background-color: #FFF8F8;
+  border: 1.5px solid #FECDD3;
+  border-radius: var(--radius-md);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.03);
+}
+
+.trap-title {
+  font-size: 17px;
+  font-weight: 900;
+  color: #9F1239;
+  margin: 0;
+}
+
+.trap-why-box {
+  font-size: 13.5px;
+  color: #881337;
+  line-height: 1.5;
+}
+
+.trap-label {
+  font-weight: 800;
+  display: block;
+  margin-bottom: 4px;
+  color: #BE123C;
+}
+
+.trap-solution-box {
+  background-color: #FFFFFF;
+  border: 1px solid #A7F3D0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-top: auto;
+}
+
+.trap-solution-label {
+  font-size: 12px;
+  font-weight: 800;
+  color: #059669;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.trap-solution-text {
+  font-size: 13px;
+  color: #064E3B;
+  line-height: 1.45;
+  margin: 0;
+}
+
+

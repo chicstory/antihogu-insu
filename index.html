@@ -3,20 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>호구방지위원회 | 보험 호구 방지 & ELI10 위키</title>
-  <meta name="description" content="로그인 0초, 개인정보 0개! 내 증권의 거품과 갱신형 시한폭탄을 10초 만에 잡아내는 대한민국 No.1 Zero-Privacy 보험 분석기">
+  <title>보험 119 | 갑자기 닥치면 파산하는 필수 메인 보험 & 시너지 백과</title>
+  <meta name="description" content="감기는 내 돈으로 내도 되지만, 이건 없으면 집안이 무너집니다. 인생의 재앙을 100% 막아주는 6대 필수 메인 계약과 1+1 시너지 콤보 백과">
   
   <!-- Pretendard 폰트 -->
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <link rel="stylesheet" href="css/style.css">
-
-  <!-- Zero-Privacy 로컬 PDF 파서 CDN (pdf.js) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script>
-    if (window.pdfjsLib) {
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    }
-  </script>
 </head>
 <body>
 
@@ -24,12 +16,12 @@
   <header class="site-header">
     <div class="header-inner">
       <div class="brand-area">
-        <span class="brand-logo">🛡️</span>
-        <h1 class="brand-title">호구방지위원회</h1>
-        <span class="brand-badge">BETA</span>
+        <span class="brand-logo">🚨</span>
+        <h1 class="brand-title">보험 119</h1>
+        <span class="brand-badge">구 호구방지위원회</span>
       </div>
       <nav class="header-nav">
-        <a href="#" class="nav-link active">🛡️ 보험</a>
+        <a href="#" class="nav-link active">🚨 보험 119</a>
         <a href="#" class="nav-link disabled" title="오픈 준비 중">🚗 중고차</a>
         <a href="#" class="nav-link disabled" title="오픈 준비 중">📱 알뜰폰</a>
         <a href="#" class="nav-link disabled" title="오픈 준비 중">🏠 부동산</a>
@@ -37,241 +29,78 @@
     </div>
   </header>
 
-  <!-- 2. Sub Navigation (보험 카테고리 서브탭) -->
+  <!-- 2. Sub Navigation (보험 119 서브탭) -->
   <nav class="sub-nav">
     <div class="sub-nav-inner">
-      <button class="subnav-item active" data-tab="tabScanner">📊 내 증권 호구 스캐너</button>
-      <button class="subnav-item" data-tab="tabWiki">📖 보험 ELI10 위키 & 시너지 백과</button>
-      <button class="subnav-item" data-tab="tabClaimHacks">🩺 병원·청구 실전 시크릿</button>
+      <button class="subnav-item active" data-tab="tabEssential">🚨 1. 필수 생존 보험 119 (메인 계약 & 함정 분별소)</button>
+      <button class="subnav-item" data-tab="tabWiki">📖 2. 보험 119 위키 & 시너지 백과 (전수 약관 해설)</button>
     </div>
   </nav>
 
   <!-- 3. Main Container -->
   <main class="main-container">
 
-    <!-- TAB 1: 내 증권 호구 스캐너 -->
-    <section id="tabScanner" class="tab-pane active">
+    <!-- TAB 1: 필수 생존 보험 119 -->
+    <section id="tabEssential" class="tab-pane active">
       <div class="hero-banner">
-        <span class="hero-tag">🔒 Zero-Privacy 로컬 분석</span>
-        <h2 class="hero-title">내 보험, 호구 잡히고 있을까?</h2>
-        <p class="hero-desc">로그인 0초, 개인정보 0개! 카톡/이메일로 받은 증권 PDF를 올리면 10초 만에 도장을 쾅 찍어드립니다.</p>
+        <span class="hero-tag">🚨 인생 위기 방어 매뉴얼</span>
+        <h2 class="hero-title">감기는 내 돈으로 내도 되지만, 이건 없으면 집안이 무너집니다.</h2>
+        <p class="hero-desc">설계사가 권하는 수백 가지 특약 중, 인생의 재앙(수천만 원 병원비, 수억 원 대물사고, 교도소 구속, 누수 파산)을 100% 막아주는 <strong>'기본 메인 계약' 6가지</strong>를 엄선했습니다.</p>
       </div>
 
-      <!-- 입력 카드 -->
-      <div class="scanner-card">
-        <!-- 원클릭 실전 샘플 테스트 -->
-        <div class="quick-sample-area">
-          <div class="sample-title">⚡ 클릭 1초 만에 실제 데이터로 테스트해 보세요!</div>
-          <div class="sample-buttons">
-            <button id="btnSampleUser" class="btn-sample">
-              <span>🧑 내 2007 현대해상 샘플</span>
-              <span class="sample-tag">1세대 실손 100% 보물 + 진단비 0원 구멍형</span>
-            </button>
-            <button id="btnSampleMother" class="btn-sample">
-              <span>👵 어머니 한화손보 굿밸런스 샘플</span>
-              <span class="sample-tag">사망 2억 몰빵 + 갱신 6천 폭탄 + 뇌 2천 알짜형</span>
-            </button>
-          </div>
+      <!-- 6대 필수 메인 계약 섹션 -->
+      <div class="section-block">
+        <div class="section-header">
+          <h3 class="section-title">🛡️ 기본 메인 계약이 필수적인 6대 생존 보험</h3>
+          <p class="section-sub">다른 조미료 특약은 다 빼더라도, 아래 6개 기본 메인 계약은 반드시 챙겨야 가계가 파산하지 않습니다.</p>
         </div>
-
-        <!-- PDF 파일 업로드 드롭존 -->
-        <div class="file-upload-area">
-          <div class="sample-title">📄 공식 증권 PDF 문서 올리기 (오타 0% 완벽 추출)</div>
-          <div id="dropZone" class="drop-zone">
-            <div class="drop-icon">📑</div>
-            <p class="drop-text"><strong>카카오톡이나 이메일로 받은 증권 PDF를 여기로 끌어다 놓으세요</strong></p>
-            <p class="drop-sub">🔒 암호(생년월일 6자리)가 걸려 있어도 브라우저에서 안전하게 바로 열립니다!</p>
-            <input type="file" id="fileInput" accept="application/pdf,.pdf" style="display: none;">
-            <button type="button" id="btnSelectFile" class="btn-select-file">PDF 증권 파일 선택</button>
-          </div>
-        </div>
-
-        <!-- 진행 상태 프로그레스 바 -->
-        <div id="pdfProgressBox" class="ocr-progress-box" style="display: none;">
-          <div class="ocr-progress-header">
-            <span id="pdfStatusText">PDF 분석 중...</span>
-            <span id="pdfPercentText">0%</span>
-          </div>
-          <div class="ocr-progress-bar">
-            <div id="pdfProgressBarFill" class="ocr-progress-bar-fill" style="width: 0%;"></div>
-          </div>
-        </div>
-
-        <!-- 텍스트 직접 붙여넣기 (아코디언 형태) -->
-        <details class="raw-input-details">
-          <summary class="raw-details-summary">📋 또는 증권 텍스트 직접 붙여넣기</summary>
-          <div class="raw-input-area" style="margin-top: 14px;">
-            <textarea id="rawTextInput" class="raw-textarea" placeholder="보험 증권에 적힌 특약과 금액을 그대로 복사해서 붙여넣으세요.&#10;예시:&#10;암진단비 10,000,000원&#10;뇌혈관질환진단비 20,000,000원&#10;질병사망(갱신형) 60,000,000원"></textarea>
-            <button id="btnAnalyzeText" class="btn-primary">텍스트로 호구 등급 판독하기 🔨</button>
-          </div>
-        </details>
-
-        <div class="privacy-pledge">
-          <span>🔒</span>
-          <span>이름과 주민번호는 읽지 않으며, 서버로 어떤 데이터도 전송되지 않는 100% 안전한 로컬 분석입니다.</span>
-        </div>
+        <div id="essentialCoreContainer" class="essential-grid"></div>
       </div>
 
-      <!-- 🔐 생년월일 비밀번호 모달 팝업 -->
-      <div id="passwordModal" class="modal-backdrop" style="display: none;">
-        <div class="modal-card">
-          <div class="modal-icon">🔐</div>
-          <h3 class="modal-title">보험사 보안 비밀번호 입력</h3>
-          <p class="modal-desc">가입자(피보험자)의 <strong>생년월일 6자리</strong>를 입력해 주세요.<br><span class="modal-sub">(예: 1987년 1월 1일생 ➔ <strong>870101</strong>)</span></p>
-          <form id="passwordForm">
-            <input type="password" id="pdfPasswordInput" class="modal-input" maxlength="6" placeholder="생년월일 6자리 (YYMMDD)" autofocus autocomplete="off">
-            <div class="modal-actions">
-              <button type="button" id="btnCancelPassword" class="btn-modal-cancel">취소</button>
-              <button type="submit" id="btnSubmitPassword" class="btn-modal-submit">잠금 해제 & 1초 분석 🚀</button>
-            </div>
-          </form>
-          <div class="modal-tip">💡 입력하신 생년월일로 만 나이가 자동 계산되어 더 정밀한 분석이 진행됩니다.</div>
+      <!-- 절대 피해야 할 주계약 함정 4종 섹션 -->
+      <div class="section-block" style="margin-top: 40px;">
+        <div class="section-header">
+          <h3 class="section-title text-danger">❌ 주계약 자체가 함정인 절대 피해야 할 보험 4종</h3>
+          <p class="section-sub">이름은 그럴싸하지만 사업비를 떼어가거나 지급 조건이 극악이라 가입할수록 손해 보는 대표 상품들입니다.</p>
         </div>
-      </div>
-
-      <!-- 분석 결과 화면 (초기에는 숨김) -->
-      <div id="analysisResultContainer" class="result-section">
-        <div class="result-card">
-          <!-- 도장 & 점수 헤더 -->
-          <div class="stamp-header">
-            <div>
-              <span id="stampBadge" class="hogu-stamp stamp-danger">👑 보험사 VIP 기부천사 1급</span>
-            </div>
-            <div class="score-box">
-              <div class="score-num"><span id="scoreValue">35</span><span> / 100점</span></div>
-              <div class="score-bar">
-                <div id="scoreBarFill" class="score-bar-fill" style="width: 35%;"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- 월 납입 보험료 직접 입력/확인 바 -->
-          <div class="premium-tune-bar">
-            <div class="premium-tune-label">
-              <span>💳 내 실제 월 납입 보험료</span>
-              <span class="premium-tune-sub">(증권에 가격이 안 적혀 있다면 내가 매달 내는 금액을 넣어보세요!)</span>
-            </div>
-            <div class="premium-tune-input-wrap">
-              <input type="number" id="userMonthlyPremiumInput" class="premium-tune-input" placeholder="예: 55000" step="1000">
-              <span class="premium-tune-won">원</span>
-            </div>
-          </div>
-
-          <!-- 사이다 요약 박스 -->
-          <div class="summary-box">
-            <div id="resSummaryText" class="summary-text">설계사들의 배를 불려주는 일등공신! 매달 수만 원씩 내면서 정작 아플 때 받을 돈은 쥐꼬리입니다.</div>
-            <div id="resRecText" class="rec-text">즉시 다이어트(특약 부분삭제)를 단행하세요! 월 3~5만 원(치킨 2~3마리)을 평생 되찾을 수 있습니다.</div>
-          </div>
-
-          <!-- 칭찬 vs 경고 2단 그리드 -->
-          <div class="insights-grid">
-            <div class="insight-box praises">
-              <div class="insight-title">🟢 놓치지 말아야 할 알짜 보장</div>
-              <ul id="praisesList" class="insight-list"></ul>
-            </div>
-            <div class="insight-box warnings">
-              <div class="insight-title">🚨 당장 손봐야 할 시한폭탄 & 눈탱이</div>
-              <ul id="warningsList" class="insight-list"></ul>
-            </div>
-          </div>
-
-          <!-- 다이어트 처방전 -->
-          <div id="dietPrescriptionBox" class="diet-box"></div>
-
-          <!-- 전수 담보 테이블 -->
-          <div class="dambo-table-box">
-            <h4 style="margin-bottom: 12px; font-weight: 800;">📋 전수 담보 정밀 진단표</h4>
-            <table class="dambo-table">
-              <thead>
-                <tr>
-                  <th>특약(담보) 명칭</th>
-                  <th>가입금액</th>
-                  <th>만기</th>
-                  <th>납입</th>
-                  <th>판정</th>
-                </tr>
-              </thead>
-              <tbody id="damBoTableBody"></tbody>
-            </table>
-          </div>
-        </div>
+        <div id="trapPoliciesContainer" class="trap-grid"></div>
       </div>
     </section>
 
-    <!-- TAB 2: 보험 ELI10 위키 -->
+    <!-- TAB 2: 보험 119 위키 & 시너지 백과 -->
     <section id="tabWiki" class="tab-pane">
       <div class="hero-banner">
-        <span class="hero-tag">📖 초등 4학년 눈높이 사전</span>
-        <h2 class="hero-title">보험 ELI10 위키 백과</h2>
-        <p class="hero-desc">어려운 한자어와 약관 외계어, 초등 4학년도 비웃을 수 있는 사이다 일상 비유로 1초 만에 풀어드립니다.</p>
+        <span class="hero-tag">📖 10살 눈높이 약관 해설 & 1+1 시너지 백과</span>
+        <h2 class="hero-title">보험 119 위키 & 시너지 콤보 백과</h2>
+        <p class="hero-desc">어려운 한자어 외계어를 10살 눈높이로 해체하고, 설계사가 절대 안 알려주는 영업 비밀과 계약 간 1+1 시너지 콤보를 모두 공개합니다.</p>
       </div>
 
       <!-- 카테고리 칩 필터 -->
       <div class="wiki-filter-bar">
         <button class="filter-chip active" data-category="all">전체 보기</button>
         <button class="filter-chip" data-category="cancer">암 보장</button>
-        <button class="filter-chip" data-category="brain">뇌혈관</button>
-        <button class="filter-chip" data-category="heart">심장질환</button>
+        <button class="filter-chip" data-category="brain_heart">뇌·심장</button>
         <button class="filter-chip" data-category="silbi">실손의료비</button>
-        <button class="filter-chip" data-category="death">사망/갱신폭탄</button>
+        <button class="filter-chip" data-category="life_pension">종신·생명·정기</button>
+        <button class="filter-chip" data-category="nursing_dementia">치매·간병</button>
+        <button class="filter-chip" data-category="fire_liability">화재·누수·배상</button>
+        <button class="filter-chip" data-category="auto">자동차·운전자</button>
         <button class="filter-chip" data-category="waste">과자값 푼돈특약</button>
-        <button class="filter-chip" data-category="auto">자동차/운전자</button>
       </div>
 
       <!-- 위키 실시간 검색창 -->
       <div class="wiki-search-box">
-        <input type="text" id="wikiSearchInput" class="wiki-search-input" placeholder="증권에 적힌 헷갈리는 특약 이름을 검색해 보세요 (예: 허혈성, 자상, 표적, 갱신)...">
+        <input type="text" id="wikiSearchInput" class="wiki-search-input" placeholder="특약 이름이나 키워드를 검색해 보세요 (예: 견인, 무면허, 누수, 자부상, 표적, CI, 종신, 티맵)...">
       </div>
 
       <!-- 위키 카드 리스트 컨테이너 -->
       <div id="wikiListContainer" class="wiki-grid"></div>
     </section>
 
-    <!-- TAB 3: 병원·청구 실전 시크릿 -->
-    <section id="tabClaimHacks" class="tab-pane">
-      <div class="hero-banner">
-        <span class="hero-tag">🩺 눈물 젖은 실전 방어 매뉴얼</span>
-        <h2 class="hero-title">병원 & 보험금 청구 실전 시크릿</h2>
-        <p class="hero-desc">보험은 가입할 때 50%를 아끼고, 병원에 갔을 때 50%를 지킵니다. 의사도 보험사도 안 알려주는 청구의 기술!</p>
-      </div>
-
-      <div class="hack-card">
-        <h3 class="hack-title">🏥 1. 고액 검사비(MRI/CT 200만 원) 100% 환급받는 "입원 검사"의 법칙</h3>
-        <div class="hack-box">
-          <strong>❌ 통원의 참사</strong>: 당일 외래 통원으로 뇌파/MRI 찍으면 1일 통원 한도(10만~20만 원)에 막혀 <strong>내 생돈 180~190만 원 증발!</strong>
-        </div>
-        <div class="hack-box solution">
-          <strong>⭕ 100% 전액 환급 솔루션</strong>: <em>"집에서 실신/경련 위험이 있어 입원 관찰하며 검사받고 싶습니다"</em> 요청하여 <strong>1박 2일 또는 6시간 '낮병동' 입원</strong>으로 처리 ➔ <strong>실손보험에서 200만 원 전액(100%) 환급!</strong>
-        </div>
-      </div>
-
-      <div class="hack-card">
-        <h3 class="hack-title">📄 2. 진단서 질병코드(KCD) 한 글자로 2,000만 원 살려내는 기술</h3>
-        <div class="hack-box">
-          <strong>❌ 의사의 단독 기재</strong>: 진단서에 <code>G40.90 (상세불명의 뇌전증)</code> 딱 하나만 적히면 뇌혈관 진단비 <strong>0원 지급 (면책)</strong>.
-        </div>
-        <div class="hack-box solution">
-          <strong>⭕ 실전 소통 팁</strong>: MRI 상에 미세한 혈관 막힘 흔적이 보였다면 진료 시 정중히 요청:  
-          <em>"선생님, MRI에 미세 뇌경색 흔적이 보였다고 하셨는데, 부상병란에 <code>I63(뇌경색)</code> 또는 <code>I67</code> 코드도 함께 병기해 주실 수 있을까요?"</em>  
-          ➔ 코드 한 줄 추가되는 순간 <strong>숨어있던 진단비 2,000만 원 즉시 지급!</strong>
-        </div>
-      </div>
-
-      <div class="hack-card">
-        <h3 class="hack-title">⏱️ 3. 3년 전 병원비도 돌려받는 '보험금 청구권 소멸시효(3년)'</h3>
-        <div class="hack-box solution">
-          <strong>⭕ 소급 청구의 마법</strong>: 과거에 몰라서 청구하지 못했거나, 콜센터 말 한마디에 속아 포기했던 병원비/진단비!  
-          <strong>진단/치료일로부터 3년 이내</strong>라면 지금이라도 병원에서 의무기록사본을 떼어 재청구하면 전액 돌려받을 수 있습니다!
-        </div>
-      </div>
-    </section>
-
   </main>
 
   <!-- Scripts -->
   <script src="js/rules.js"></script>
-  <script src="js/analyzer.js"></script>
-  <script src="js/pdf_engine.js"></script>
   <script src="js/wiki.js"></script>
   <script src="js/app.js"></script>
 </body>

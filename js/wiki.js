@@ -30,7 +30,17 @@ class HoguWiki {
   getFilteredItems() {
     return this.items.filter(item => {
       // 카테고리 필터
-      const matchCat = this.currentCategory === "all" || item.category === this.currentCategory;
+      let matchCat = false;
+      if (this.currentCategory === "all") {
+        matchCat = true;
+      } else if (this.currentCategory === "brain_heart") {
+        matchCat = item.category === "brain" || item.category === "heart";
+      } else if (this.currentCategory === "life_pension") {
+        matchCat = item.category === "life_pension" || item.category === "death";
+      } else {
+        matchCat = item.category === this.currentCategory;
+      }
+
       // 검색어 필터 (제목, 10살비유, 영업비밀, 시너지콤보, 행동지침 통합 검색)
       const q = this.searchQuery;
       const matchQuery = !q || 
