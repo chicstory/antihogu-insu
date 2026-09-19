@@ -39,54 +39,95 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 3. 파일 업로드 및 Zero-Privacy 마스킹 OCR 연동
-  const privacyCanvas = document.getElementById("privacyCanvas");
-  const maskingStudio = document.getElementById("maskingStudio");
-  const ocrProgressBox = document.getElementById("ocrProgressBox");
-  const ocrStatusText = document.getElementById("ocrStatusText");
-  const ocrPercentText = document.getElementById("ocrPercentText");
-  const ocrProgressBarFill = document.getElementById("ocrProgressBarFill");
+  // 3. PDF 엔진 & 생년월일 비밀번호 모달 연동
+  const pdfProgressBox = document.getElementById("pdfProgressBox");
+  const pdfStatusText = document.getElementById("pdfStatusText");
+  const pdfPercentText = document.getElementById("pdfPercentText");
+  const pdfProgressBarFill = document.getElementById("pdfProgressBarFill");
 
   const dropZone = document.getElementById("dropZone");
   const fileInput = document.getElementById("fileInput");
   const btnSelectFile = document.getElementById("btnSelectFile");
-  const btnClearMasks = document.getElementById("btnClearMasks");
-  const btnRunOCR = document.getElementById("btnRunOCR");
 
-  const ocr = new HoguOCR({
-    canvas: privacyCanvas,
+  const passwordModal = document.getElementById("passwordModal");
+  const passwordForm = document.getElementById("passwordForm");
+  const pdfPasswordInput = document.getElementById("pdfPasswordInput");
+  const btnCancelPassword = document.getElementById("btnCancelPassword");
+
+  let currentPasswordCallback = null;
+
+  const pdfEngine = new HoguPdfEngine({
     onProgress: (p) => {
-      if (ocrProgressBox) ocrProgressBox.style.display = "block";
-      if (ocrStatusText) ocrStatusText.textContent = p.status;
+      if (pdfProgressBox) pdfProgressBox.style.display = "block";
+      if (pdfStatusText) pdfStatusText.textContent = p.status;
       const pct = Math.floor(p.progress * 100);
-      if (ocrPercentText) ocrPercentText.textContent = `${pct}%`;
-      if (ocrProgressBarFill) ocrProgressBarFill.style.width = `${pct}%`;
+      if (pdfPercentText) pdfPercentText.textContent = `${pct}%`;
+      if (pdfProgressBarFill) pdfProgressBarFill.style.width = `${pct}%`;
     },
-    onCompleted: (extractedText) => {
-      if (ocrProgressBox) ocrProgressBox.style.display = "none";
-      if (maskingStudio) maskingStudio.style.display = "none";
-      
-      console.log("✅ [OCR 완료 텍스트]", extractedText);
-      
-      // 추출된 텍스트를 텍스트 입력창에 자동으로 채우고 아코디언 열기!
+    onPasswordPrompt: (callback) => {
+      currentPasswordCallback = callback;
+      if (passwordModal) {
+        passwordModal.style.display = "flex";
+        if (pdfPasswordInput) {
+          pdfPasswordInput.value = "";
+          setTimeout(() => pdfPasswordInput.focus(), 100);
+        }
+      }
+    },
+    onCompleted: (res) => {
+      if (pdfProgressBox) pdfProgressBox.style.display = "none";
+      console.log("✅ [PDF 텍스트 추출 완료]", res);
+
+      // 추출된 텍스트를 텍스트 입력창에 자동으로 채우고 아코디언 열기
       const rawTextInput = document.getElementById("rawTextInput");
       const detailsEl = document.querySelector(".raw-input-details");
-      if (rawTextInput) rawTextInput.value = extractedText;
+      if (rawTextInput) rawTextInput.value = res.rawText;
       if (detailsEl) detailsEl.open = true;
 
-      // 추출된 텍스트로 파싱 및 분석 실행
-      const parsedPolicy = analyzer.parseRawText(extractedText);
+      // 파싱 및 분석 실행 (계산된 나이 주입!)
+      const parsedPolicy = analyzer.parseRawText(res.rawText);
+      parsedPolicy.age = res.age || parsedPolicy.age;
+      parsedPolicy.title = `📄 PDF 증권 (만 ${parsedPolicy.age}세)`;
+
       if (parsedPolicy.items.length === 0) {
-        alert("⚠️ 텍스트는 판독되었으나 특약/금액을 자동으로 분리하지 못했습니다.\n아래 텍스트 입력창에 추출된 내용을 확인하시고 [텍스트로 호구 등급 판독하기]를 눌러보세요!");
+        alert("⚠️ PDF에서 텍스트는 추출되었으나 특약/금액을 자동으로 분리하지 못했습니다.\n아래 텍스트 입력창의 내용을 확인하시고 [텍스트로 호구 등급 판독하기]를 눌러보세요!");
       } else {
         runAnalysis(parsedPolicy);
       }
     },
     onError: (errMsg) => {
-      if (ocrProgressBox) ocrProgressBox.style.display = "none";
+      if (pdfProgressBox) pdfProgressBox.style.display = "none";
       alert(errMsg);
     }
   });
+
+  // 비밀번호 폼 제출 이벤트
+  if (passwordForm && pdfPasswordInput) {
+    passwordForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const pwd = pdfPasswordInput.value.trim();
+      if (!pwd) {
+        alert("생년월일 6자리를 입력해 주세요!");
+        return;
+      }
+      if (passwordModal) passwordModal.style.display = "none";
+      if (currentPasswordCallback) {
+        currentPasswordCallback(pwd);
+        currentPasswordCallback = null;
+      }
+    });
+  }
+
+  // 비밀번호 입력 취소
+  if (btnCancelPassword) {
+    btnCancelPassword.addEventListener("click", () => {
+      if (passwordModal) passwordModal.style.display = "none";
+      if (currentPasswordCallback) {
+        currentPasswordCallback(null);
+        currentPasswordCallback = null;
+      }
+    });
+  }
 
   // 파일 선택 버튼
   if (btnSelectFile && fileInput) {
@@ -99,7 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.target !== btnSelectFile) fileInput.click();
     });
 
-    // 드래그 앤 드롭 이벤트
     dropZone.addEventListener("dragover", (e) => {
       e.preventDefault();
       dropZone.classList.add("dragover");
@@ -111,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       dropZone.classList.remove("dragover");
       if (e.dataTransfer.files.length > 0) {
-        handleIncomingFile(e.dataTransfer.files[0]);
+        pdfEngine.loadPdfFile(e.dataTransfer.files[0]);
       }
     });
   }
@@ -120,26 +160,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (fileInput) {
     fileInput.addEventListener("change", (e) => {
       if (e.target.files.length > 0) {
-        handleIncomingFile(e.target.files[0]);
+        pdfEngine.loadPdfFile(e.target.files[0]);
       }
-    });
-  }
-
-  async function handleIncomingFile(file) {
-    if (maskingStudio) maskingStudio.style.display = "block";
-    maskingStudio.scrollIntoView({ behavior: "smooth" });
-    await ocr.loadFile(file);
-  }
-
-  // 마스킹 초기화
-  if (btnClearMasks) {
-    btnClearMasks.addEventListener("click", () => ocr.clearMasks());
-  }
-
-  // 마스킹 완료 & OCR 판독 실행
-  if (btnRunOCR) {
-    btnRunOCR.addEventListener("click", async () => {
-      await ocr.runOCR();
     });
   }
 

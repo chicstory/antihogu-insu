@@ -10,15 +10,13 @@
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- Zero-Privacy 로컬 파서 CDN (pdf.js & tesseract.js) -->
+  <!-- Zero-Privacy 로컬 PDF 파서 CDN (pdf.js) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script>
-    // pdf.js worker 설정
     if (window.pdfjsLib) {
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 <body>
 
@@ -56,7 +54,7 @@
       <div class="hero-banner">
         <span class="hero-tag">🔒 Zero-Privacy 로컬 분석</span>
         <h2 class="hero-title">내 보험, 호구 잡히고 있을까?</h2>
-        <p class="hero-desc">로그인 0초, 개인정보 0개! 사진이나 PDF를 올리면 브라우저에서 직접 개인정보를 가리고 10초 만에 판독합니다.</p>
+        <p class="hero-desc">로그인 0초, 개인정보 0개! 카톡/이메일로 받은 증권 PDF를 올리면 10초 만에 도장을 쾅 찍어드립니다.</p>
       </div>
 
       <!-- 입력 카드 -->
@@ -76,44 +74,26 @@
           </div>
         </div>
 
-        <!-- 사진 및 PDF 파일 업로드 드롭존 -->
+        <!-- PDF 파일 업로드 드롭존 -->
         <div class="file-upload-area">
-          <div class="sample-title">📸 증권 사진(JPG/PNG) 또는 PDF 올리기</div>
+          <div class="sample-title">📄 공식 증권 PDF 문서 올리기 (오타 0% 완벽 추출)</div>
           <div id="dropZone" class="drop-zone">
-            <div class="drop-icon">📄</div>
-            <p class="drop-text"><strong>증권 사진이나 PDF 파일을 여기로 끌어다 놓으세요</strong></p>
-            <p class="drop-sub">또는 파일 선택 / 스마트폰 카메라로 촬영</p>
-            <input type="file" id="fileInput" accept="image/*,application/pdf" style="display: none;">
-            <button type="button" id="btnSelectFile" class="btn-select-file">파일 선택 / 사진 촬영</button>
-          </div>
-        </div>
-
-        <!-- 캔버스 개인정보 마스킹 작업대 (파일 로드 시 노출) -->
-        <div id="maskingStudio" class="masking-studio" style="display: none;">
-          <div class="masking-header">
-            <div>
-              <h4 class="masking-title">🔒 개인정보 마스킹 작업대</h4>
-              <p class="masking-desc">마우스나 손가락으로 드래그하여 이름, 주민번호, 증권번호 등을 검은색으로 가려주세요!</p>
-            </div>
-            <div class="masking-actions">
-              <button type="button" id="btnClearMasks" class="btn-secondary">🔄 마스킹 초기화</button>
-              <button type="button" id="btnRunOCR" class="btn-primary-small">🔒 마스킹 완료 & 10초 분석 시작 🔨</button>
-            </div>
-          </div>
-          
-          <div class="canvas-wrapper">
-            <canvas id="privacyCanvas"></canvas>
+            <div class="drop-icon">📑</div>
+            <p class="drop-text"><strong>카카오톡이나 이메일로 받은 증권 PDF를 여기로 끌어다 놓으세요</strong></p>
+            <p class="drop-sub">🔒 암호(생년월일 6자리)가 걸려 있어도 브라우저에서 안전하게 바로 열립니다!</p>
+            <input type="file" id="fileInput" accept="application/pdf,.pdf" style="display: none;">
+            <button type="button" id="btnSelectFile" class="btn-select-file">PDF 증권 파일 선택</button>
           </div>
         </div>
 
         <!-- 진행 상태 프로그레스 바 -->
-        <div id="ocrProgressBox" class="ocr-progress-box" style="display: none;">
+        <div id="pdfProgressBox" class="ocr-progress-box" style="display: none;">
           <div class="ocr-progress-header">
-            <span id="ocrStatusText">텍스트 판독 중...</span>
-            <span id="ocrPercentText">0%</span>
+            <span id="pdfStatusText">PDF 분석 중...</span>
+            <span id="pdfPercentText">0%</span>
           </div>
           <div class="ocr-progress-bar">
-            <div id="ocrProgressBarFill" class="ocr-progress-bar-fill" style="width: 0%;"></div>
+            <div id="pdfProgressBarFill" class="ocr-progress-bar-fill" style="width: 0%;"></div>
           </div>
         </div>
 
@@ -129,6 +109,23 @@
         <div class="privacy-pledge">
           <span>🔒</span>
           <span>이름과 주민번호는 읽지 않으며, 서버로 어떤 데이터도 전송되지 않는 100% 안전한 로컬 분석입니다.</span>
+        </div>
+      </div>
+
+      <!-- 🔐 생년월일 비밀번호 모달 팝업 -->
+      <div id="passwordModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-card">
+          <div class="modal-icon">🔐</div>
+          <h3 class="modal-title">보험사 보안 비밀번호 입력</h3>
+          <p class="modal-desc">가입자(피보험자)의 <strong>생년월일 6자리</strong>를 입력해 주세요.<br><span class="modal-sub">(예: 1987년 1월 1일생 ➔ <strong>870101</strong>)</span></p>
+          <form id="passwordForm">
+            <input type="password" id="pdfPasswordInput" class="modal-input" maxlength="6" placeholder="생년월일 6자리 (YYMMDD)" autofocus autocomplete="off">
+            <div class="modal-actions">
+              <button type="button" id="btnCancelPassword" class="btn-modal-cancel">취소</button>
+              <button type="submit" id="btnSubmitPassword" class="btn-modal-submit">잠금 해제 & 1초 분석 🚀</button>
+            </div>
+          </form>
+          <div class="modal-tip">💡 입력하신 생년월일로 만 나이가 자동 계산되어 더 정밀한 분석이 진행됩니다.</div>
         </div>
       </div>
 
@@ -262,7 +259,7 @@
   <!-- Scripts -->
   <script src="js/rules.js"></script>
   <script src="js/analyzer.js"></script>
-  <script src="js/ocr.js"></script>
+  <script src="js/pdf_engine.js"></script>
   <script src="js/wiki.js"></script>
   <script src="js/app.js"></script>
 </body>
