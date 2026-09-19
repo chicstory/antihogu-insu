@@ -1,0 +1,724 @@
+/* 🛡️ 호구방지위원회 - 클린 핀테크 라이트 UI 시스템 (Toss/Apple Style) */
+
+:root {
+  --bg-main: #F8FAFC;
+  --bg-card: #FFFFFF;
+  --bg-sub: #F1F5F9;
+  
+  --text-main: #0F172A;
+  --text-sub: #475569;
+  --text-muted: #94A3B8;
+  
+  --primary: #3182F6;       /* 토스풍 신뢰의 블루 */
+  --primary-light: #EFF6FF;
+  --primary-hover: #1D4ED8;
+  
+  --emerald: #10B981;       /* 알짜/안전 그린 */
+  --emerald-light: #ECFDF5;
+  
+  --coral: #EF4444;         /* 호구/위험 레드 */
+  --coral-light: #FEF2F2;
+  
+  --amber: #F59E0B;         /* 주의/선택 오렌지 */
+  --amber-light: #FFFBEB;
+  
+  --border-light: #E2E8F0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+  --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
+  --shadow-hover: 0 8px 30px -4px rgba(15, 23, 42, 0.12);
+  
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  
+  --font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 1. Header & GNB */
+.site-header {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.brand-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-logo {
+  font-size: 24px;
+}
+
+.brand-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.5px;
+}
+
+.brand-badge {
+  background-color: var(--primary-light);
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+}
+
+.header-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.nav-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-sub);
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+}
+
+.nav-link.active {
+  background-color: var(--text-main);
+  color: #FFFFFF;
+}
+
+.nav-link.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 2. Sub Navigation (보험 카테고리 탭) */
+.sub-nav {
+  background-color: var(--bg-card);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sub-nav-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+}
+
+.subnav-item {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-sub);
+  padding: 14px 0;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.subnav-item.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+  font-weight: 800;
+}
+
+/* 3. Main Container */
+.main-container {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* 4. Hero Section */
+.hero-banner {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.hero-tag {
+  display: inline-block;
+  background-color: var(--primary-light);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  margin-bottom: 12px;
+}
+
+.hero-title {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.8px;
+  margin-bottom: 8px;
+}
+
+.hero-desc {
+  font-size: 16px;
+  color: var(--text-sub);
+}
+
+/* 5. Scanner Upload Box */
+.scanner-card {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
+  margin-bottom: 32px;
+}
+
+.quick-sample-area {
+  background-color: var(--bg-sub);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.sample-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-sub);
+  margin-bottom: 12px;
+}
+
+.sample-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn-sample {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-main);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  transition: all 0.2s;
+}
+
+.btn-sample:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-sample .sample-tag {
+  font-size: 11px;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.raw-input-area {
+  margin-top: 20px;
+}
+
+.raw-textarea {
+  width: 100%;
+  height: 120px;
+  padding: 14px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 12px;
+}
+
+.raw-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.btn-primary {
+  width: 100%;
+  background-color: var(--primary);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+
+.privacy-pledge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 16px;
+}
+
+/* 6. Analysis Result Section */
+.result-section {
+  display: none;
+  margin-top: 32px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.result-card {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
+  margin-bottom: 24px;
+}
+
+.stamp-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+/* 도장(Stamp) 효과 */
+.hogu-stamp {
+  display: inline-block;
+  font-size: 20px;
+  font-weight: 900;
+  padding: 10px 24px;
+  border-radius: var(--radius-sm);
+  border: 3px solid;
+  transform: rotate(-3deg);
+  letter-spacing: -0.5px;
+}
+
+.stamp-danger {
+  color: var(--coral);
+  border-color: var(--coral);
+  background-color: var(--coral-light);
+}
+
+.stamp-safe {
+  color: var(--emerald);
+  border-color: var(--emerald);
+  background-color: var(--emerald-light);
+}
+
+.stamp-good {
+  color: var(--primary);
+  border-color: var(--primary);
+  background-color: var(--primary-light);
+}
+
+.stamp-warning {
+  color: var(--amber);
+  border-color: var(--amber);
+  background-color: var(--amber-light);
+}
+
+.score-box {
+  text-align: right;
+}
+
+.score-num {
+  font-size: 40px;
+  font-weight: 900;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.score-num span {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.score-bar {
+  width: 100%;
+  height: 8px;
+  background-color: var(--bg-sub);
+  border-radius: var(--radius-full);
+  margin-top: 12px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  transition: width 0.8s ease-in-out;
+}
+
+.summary-box {
+  background-color: var(--bg-sub);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin: 24px 0;
+}
+
+.summary-text {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+}
+
+.rec-text {
+  font-size: 14px;
+  color: var(--text-sub);
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.insight-box {
+  padding: 16px;
+  border-radius: var(--radius-md);
+}
+
+.insight-box.praises {
+  background-color: var(--emerald-light);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.insight-box.warnings {
+  background-color: var(--coral-light);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.insight-title {
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.insight-box.praises .insight-title { color: var(--emerald); }
+.insight-box.warnings .insight-title { color: var(--coral); }
+
+.insight-list {
+  list-style: none;
+  font-size: 13px;
+}
+
+.insight-list li {
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+/* 다이어트 처방전 */
+.diet-box {
+  background-color: var(--bg-card);
+  border: 2px solid var(--coral);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.diet-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.diet-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--coral);
+}
+
+.savings-badge {
+  background-color: var(--coral-light);
+  color: var(--coral);
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+}
+
+.diet-list {
+  list-style: none;
+}
+
+.diet-item {
+  border-bottom: 1px solid var(--border-light);
+  padding: 12px 0;
+}
+
+.diet-item:last-child {
+  border-bottom: none;
+}
+
+.diet-item-main {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.diet-name {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.diet-reason {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-bottom: 4px;
+}
+
+.diet-sub-saving {
+  font-size: 12px;
+  color: var(--coral);
+  font-weight: 600;
+}
+
+/* 담보 테이블 */
+.dambo-table-box {
+  overflow-x: auto;
+  margin-top: 24px;
+}
+
+.dambo-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.dambo-table th, .dambo-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.dambo-table th {
+  background-color: var(--bg-sub);
+  color: var(--text-sub);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* 7. 위키(Wiki) 스타일 */
+.wiki-filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.filter-chip {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  padding: 8px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-sub);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.filter-chip.active {
+  background-color: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+}
+
+.wiki-search-box {
+  margin-bottom: 24px;
+}
+
+.wiki-search-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid var(--border-light);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 16px;
+  transition: border-color 0.2s;
+}
+
+.wiki-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.wiki-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.wiki-card {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-light);
+  transition: transform 0.2s;
+}
+
+.wiki-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+}
+
+.wiki-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.wiki-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.wiki-eli10-box {
+  background-color: var(--amber-light);
+  border-left: 4px solid var(--amber);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 12px 16px;
+  margin-bottom: 14px;
+}
+
+.eli10-tag {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: #B45309;
+  margin-bottom: 4px;
+}
+
+.eli10-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: #92400E;
+}
+
+.wiki-detail {
+  font-size: 14px;
+  color: var(--text-sub);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.wiki-stats {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background-color: var(--bg-sub);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+}
+
+/* 뱃지 공통 */
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+}
+
+.badge-gold { background-color: var(--emerald-light); color: var(--emerald); }
+.badge-bubble { background-color: var(--coral-light); color: var(--coral); }
+.badge-select { background-color: var(--amber-light); color: var(--amber); }
+.badge-danger { background-color: var(--coral-light); color: var(--coral); }
+.badge-neutral { background-color: var(--bg-sub); color: var(--text-sub); }
+
+/* 8. Claim Hacks Section */
+.hack-card {
+  background-color: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-card);
+  margin-bottom: 20px;
+}
+
+.hack-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 12px;
+}
+
+.hack-box {
+  background-color: var(--bg-sub);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.hack-box strong { color: var(--coral); }
+.hack-box.solution strong { color: var(--emerald); }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sample-buttons { grid-template-columns: 1fr; }
+  .insights-grid { grid-template-columns: 1fr; }
+  .hero-title { font-size: 24px; }
+  .stamp-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+}
