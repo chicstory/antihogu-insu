@@ -10,26 +10,25 @@ class HoguPdfEngine {
     this.userAge = 40;
   }
 
-  // 1. PDF 파일 로드 및 파싱 메인 파이프라인
-  async loadPdfFile(file) {
+  // 1. PDF 파일 로드 및 파싱 메인 파이프라인 (비밀번호 감지 & 재시도 탑재)
+  async loadPdfFile(file, providedPassword = null) {
     if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
       this.onError("PDF 파일만 업로드할 수 있습니다. 카카오톡이나 이메일로 받은 증권 PDF 파일을 올려주세요!");
       return;
     }
 
     try {
-      this.onProgress({ status: "PDF 파일 읽는 중...", progress: 0.1 });
+      this.onProgress({ status: providedPassword ? "비밀번호 검증 및 잠금 해제 중..." : "PDF 파일 읽는 중...", progress: 0.1 });
       const arrayBuffer = await file.arrayBuffer();
 
-      // pdf.js 문서 로드 설정 (비밀번호 콜백 탑재)
-      const loadingTask = pdfjsLib.getDocument({
-        data: arrayBuffer,
-        onPassword: (callback, reason) => {
-          this.handlePassword(callback, reason);
-        }
-      });
+      const docParams = { data: arrayBuffer };
+      if (providedPassword) {
+        docParams.password = providedPassword;
+      }
 
+      const loadingTask = pdfjsLib.getDocument(docParams);
       const pdf = await loadingTask.promise;
+
       this.onProgress({ status: `PDF 잠금 해제 성공! 총 ${pdf.numPages}페이지 텍스트 추출 중...`, progress: 0.3 });
 
       let fullText = "";
@@ -64,36 +63,34 @@ class HoguPdfEngine {
       });
 
     } catch (err) {
-      console.error("❌ [PDF Engine Error]", err);
-      if (err.name === "PasswordException") {
-        this.onError("비밀번호가 일치하지 않거나 취소되었습니다. 다시 시도해 주세요.");
+      console.warn("⚠️ [PDF Engine Warning]", err);
+
+      // 비밀번호가 필요하거나 틀렸을 때 ➔ 비밀번호 입력 모달 즉시 팝업!
+      if (err.name === "PasswordException" || (err.message && err.message.includes("password"))) {
+        this.onProgress({ status: "보안 PDF 감지: 비밀번호 입력 대기 중...", progress: 0.2 });
+
+        if (this.onPasswordPrompt) {
+          this.onPasswordPrompt((inputPassword) => {
+            if (!inputPassword) {
+              this.onError("비밀번호 입력이 취소되었습니다.");
+              return;
+            }
+            // 입력받은 생년월일로 나이 계산
+            this.calculateAgeFromBirth(inputPassword);
+            // 비밀번호를 주입하여 재귀 호출로 문서 열기!
+            this.loadPdfFile(file, inputPassword);
+          });
+        } else {
+          const pwd = prompt("🔐 보험사 보안 PDF입니다. 비밀번호(생년월일 6자리, 예: 870101)를 입력해 주세요:");
+          if (pwd) {
+            this.calculateAgeFromBirth(pwd);
+            this.loadPdfFile(file, pwd);
+          } else {
+            this.onError("비밀번호가 입력되지 않았습니다.");
+          }
+        }
       } else {
         this.onError(`PDF 파일을 여는 중 오류가 발생했습니다: ${err.message || err}`);
-      }
-    }
-  }
-
-  // 2. 비밀번호 콜백 처리 (생년월일 6자리 모달 띄우기)
-  handlePassword(callback, reason) {
-    if (this.onPasswordPrompt) {
-      this.onPasswordPrompt((inputPassword) => {
-        if (!inputPassword) {
-          callback(new Error("비밀번호 입력이 취소되었습니다."));
-          return;
-        }
-
-        // 입력받은 생년월일 6자리로 만 나이 자동 계산!
-        this.calculateAgeFromBirth(inputPassword);
-        callback(inputPassword);
-      });
-    } else {
-      // 폴백용 기본 브라우저 프롬프트
-      const pwd = prompt("🔐 보험사 보안 PDF입니다. 비밀번호(생년월일 6자리, 예: 870101)를 입력해 주세요:");
-      if (pwd) {
-        this.calculateAgeFromBirth(pwd);
-        callback(pwd);
-      } else {
-        callback(new Error("비밀번호가 입력되지 않았습니다."));
       }
     }
   }

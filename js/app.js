@@ -210,13 +210,30 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  let currentActivePolicy = null;
+
   // 6. 결과 화면 렌더링 함수
   function renderResult(res, rawPolicy) {
+    currentActivePolicy = rawPolicy;
+
     // 호구 등급 도장
     const stampEl = document.getElementById("stampBadge");
     if (stampEl) {
       stampEl.className = `hogu-stamp ${res.stampClass}`;
       stampEl.innerHTML = `${res.icon} ${res.grade}`;
+    }
+
+    // 월 보험료 튜닝 인풋 세팅
+    const premiumInput = document.getElementById("userMonthlyPremiumInput");
+    if (premiumInput) {
+      premiumInput.value = rawPolicy.monthlyPremium || 50000;
+      premiumInput.oninput = (e) => {
+        const customVal = parseInt(e.target.value, 10) || 0;
+        rawPolicy.monthlyPremium = customVal;
+        const reCalc = analyzer.analyzePolicy(rawPolicy);
+        // 다이어트 처방전 및 절약액만 실시간 갱신
+        updateDietBox(reCalc);
+      };
     }
 
     // 점수 표시
@@ -251,39 +268,8 @@ document.addEventListener("DOMContentLoaded", () => {
         : `<li>특별한 눈탱이나 시한폭탄 특약이 발견되지 않았습니다.</li>`;
     }
 
-    // 다이어트 처방전
-    const dietContainer = document.getElementById("dietPrescriptionBox");
-    if (dietContainer) {
-      if (res.dietRecommendations.length > 0) {
-        dietContainer.innerHTML = `
-          <div class="diet-header">
-            <h3>✂️ 다이어트 처방전: 이것만 빼도 돈이 굳습니다!</h3>
-            <div class="savings-badge">
-              매달 <strong>${res.monthlySavingsEst.toLocaleString()}원</strong> 절약 (치킨 <strong>${res.chickenCount}마리</strong> 값!)
-            </div>
-          </div>
-          <ul class="diet-list">
-            ${res.dietRecommendations.map(d => `
-              <li class="diet-item">
-                <div class="diet-item-main">
-                  <span class="diet-name">${d.name}</span>
-                  <span class="diet-action badge-bubble">${d.action}</span>
-                </div>
-                <p class="diet-reason">${d.reason}</p>
-                <span class="diet-sub-saving">예상 절약액: 월 약 ${d.saveEst.toLocaleString()}원</span>
-              </li>
-            `).join("")}
-          </ul>
-        `;
-      } else {
-        dietContainer.innerHTML = `
-          <div class="diet-header">
-            <h3>🎉 완벽합니다!</h3>
-            <p>빼야 할 낭비 특약이 없습니다. 지금 세팅 그대로 유지하세요!</p>
-          </div>
-        `;
-      }
-    }
+    // 다이어트 처방전 렌더링
+    updateDietBox(res);
 
     // 전수 담보 테이블
     const tableBody = document.getElementById("damBoTableBody");
@@ -314,6 +300,42 @@ document.addEventListener("DOMContentLoaded", () => {
           </tr>
         `;
       }).join("");
+    }
+  }
+
+  // 다이어트 처방전 실시간 렌더링 헬퍼
+  function updateDietBox(res) {
+    const dietContainer = document.getElementById("dietPrescriptionBox");
+    if (!dietContainer) return;
+
+    if (res.dietRecommendations.length > 0) {
+      dietContainer.innerHTML = `
+        <div class="diet-header">
+          <h3>✂️ 다이어트 처방전: 이것만 빼도 돈이 굳습니다!</h3>
+          <div class="savings-badge">
+            매달 <strong>${res.monthlySavingsEst.toLocaleString()}원</strong> 절약 (치킨 <strong>${res.chickenCount}마리</strong> 값!)
+          </div>
+        </div>
+        <ul class="diet-list">
+          ${res.dietRecommendations.map(d => `
+            <li class="diet-item">
+              <div class="diet-item-main">
+                <span class="diet-name">${d.name}</span>
+                <span class="diet-action badge-bubble">${d.action}</span>
+              </div>
+              <p class="diet-reason">${d.reason}</p>
+              <span class="diet-sub-saving">예상 절약액: 월 약 ${d.saveEst.toLocaleString()}원</span>
+            </li>
+          `).join("")}
+        </ul>
+      `;
+    } else {
+      dietContainer.innerHTML = `
+        <div class="diet-header">
+          <h3>🎉 완벽합니다!</h3>
+          <p>빼야 할 낭비 특약이 없습니다. 지금 세팅 그대로 유지하세요!</p>
+        </div>
+      `;
     }
   }
 });
