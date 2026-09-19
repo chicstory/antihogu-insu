@@ -56,43 +56,54 @@ class HoguOCR {
       this.redrawCanvas();
     };
 
+    // 마우스/터치 좌표를 캔버스 실제 내부 픽셀로 변환하는 헬퍼 (반응형 배율 보정)
+    const getCanvasCoords = (clientX, clientY) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const scaleX = this.canvas.width / rect.width;
+      const scaleY = this.canvas.height / rect.height;
+      return {
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
+      };
+    };
+
     // 마우스 이벤트
     this.canvas.addEventListener("mousedown", (e) => {
-      const rect = this.canvas.getBoundingClientRect();
-      startDraw(e.clientX - rect.left, e.clientY - rect.top);
+      const { x, y } = getCanvasCoords(e.clientX, e.clientY);
+      startDraw(x, y);
     });
 
     this.canvas.addEventListener("mousemove", (e) => {
-      const rect = this.canvas.getBoundingClientRect();
-      drawMove(e.clientX - rect.left, e.clientY - rect.top);
+      const { x, y } = getCanvasCoords(e.clientX, e.clientY);
+      drawMove(x, y);
     });
 
     this.canvas.addEventListener("mouseup", (e) => {
-      const rect = this.canvas.getBoundingClientRect();
-      endDraw(e.clientX - rect.left, e.clientY - rect.top);
+      const { x, y } = getCanvasCoords(e.clientX, e.clientY);
+      endDraw(x, y);
     });
 
     // 터치 이벤트 (스마트폰)
     this.canvas.addEventListener("touchstart", (e) => {
       if (e.touches.length === 1) {
-        const rect = this.canvas.getBoundingClientRect();
-        startDraw(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top);
+        const { x, y } = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
+        startDraw(x, y);
         e.preventDefault();
       }
     }, { passive: false });
 
     this.canvas.addEventListener("touchmove", (e) => {
       if (e.touches.length === 1) {
-        const rect = this.canvas.getBoundingClientRect();
-        drawMove(e.touches[0].clientX - rect.left, e.touches[0].clientY - rect.top);
+        const { x, y } = getCanvasCoords(e.touches[0].clientX, e.touches[0].clientY);
+        drawMove(x, y);
         e.preventDefault();
       }
     }, { passive: false });
 
     this.canvas.addEventListener("touchend", (e) => {
       if (e.changedTouches.length === 1) {
-        const rect = this.canvas.getBoundingClientRect();
-        endDraw(e.changedTouches[0].clientX - rect.left, e.changedTouches[0].clientY - rect.top);
+        const { x, y } = getCanvasCoords(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+        endDraw(x, y);
       }
     });
   }
